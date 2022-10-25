@@ -109,7 +109,7 @@ func executeLeaderTrack(vaultURL string) error {
 		return locksmith.WrapError(err, "rekey verification failed")
 	}
 
-	fmt.Println("✅ Vault rekey operation complete. New keys have been verified. You're done!")
+	fmt.Println("✅ Vault has been rekeyed, and new keys have been verified. Success!")
 
 	return nil
 }
