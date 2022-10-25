@@ -93,6 +93,13 @@ type StartRekeyRequest struct {
 	KeybaseUsers    []string
 }
 
+type WriteKeysToFileRequest struct {
+	KeybaseUsers    []string
+	PGPFingerprints []string
+	Keys            []string
+	KeysBase64      []string
+}
+
 type startRekeyRequest struct {
 	SecretShares        int      `json:"secret_shares"`
 	SecretThreshold     int      `json:"secret_threshold"`
@@ -103,11 +110,4 @@ type startRekeyRequest struct {
 type submitKeyRequest struct {
 	Key   string `json:"key"`
 	Nonce string `json:"nonce"`
-}
-
-type WriteKeysToFileRequest struct {
-	KeybaseUsers    []string
-	PGPFingerprints []string
-	Keys            []string
-	KeysBase64      []string
 }

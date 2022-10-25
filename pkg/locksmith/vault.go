@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/vault/helper/pgpkeys"
 )
 
-// GetRekeyStatus fetches the current rekey status from Vault
 func GetRekeyStatus(baseURL string) (RekeyStatus, error) {
 	client := &http.Client{}
 	url := baseURL + "/v1/sys/rekey-recovery-key/init"
@@ -37,7 +36,6 @@ func GetRekeyStatus(baseURL string) (RekeyStatus, error) {
 	return result, nil
 }
 
-// StartRekey starts a new rekey operation in Vault
 func StartRekey(baseURL string, input StartRekeyRequest) (RekeyStatus, error) {
 	// Fetch public keys from Keybase
 	var users []string
@@ -93,7 +91,6 @@ func StartRekey(baseURL string, input StartRekeyRequest) (RekeyStatus, error) {
 	return result, nil
 }
 
-// SubmitKey submits a single key to Vault
 func SubmitKey(baseURL string, key string) (RekeyStatus, error) {
 	// Fetch nonce from API
 	status, err := GetRekeyStatus(baseURL)

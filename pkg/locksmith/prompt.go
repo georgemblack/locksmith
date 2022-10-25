@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+func Prompt(prompt string) string {
+	return promptString(prompt)
+}
+
 func PromptRekeyOptions() StartRekeyRequest {
 	secretShares := promptInt("Number of secret shares")
 	secretThreshold := promptInt("Secret threshold")
@@ -27,10 +31,6 @@ func PromptRekeyOptions() StartRekeyRequest {
 		SecretThreshold: secretThreshold,
 		KeybaseUsers:    keybaseUsers,
 	}
-}
-
-func Prompt(prompt string) string {
-	return promptString(prompt)
 }
 
 func promptString(prompt string) string {
