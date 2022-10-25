@@ -32,6 +32,10 @@ func (r RekeyStatus) ErrorMessage() string {
 	return ""
 }
 
+func (r RekeyStatus) InvalidKeysError() bool {
+	return r.ErrorMessage() == "recovery key verification failed: recovery key does not match submitted values"
+}
+
 func (r RekeyStatus) InProgress() bool {
 	return r.Started
 }
@@ -99,4 +103,11 @@ type startRekeyRequest struct {
 type submitKeyRequest struct {
 	Key   string `json:"key"`
 	Nonce string `json:"nonce"`
+}
+
+type WriteKeysToFileRequest struct {
+	KeybaseUsers    []string
+	PGPFingerprints []string
+	Keys            []string
+	KeysBase64      []string
 }

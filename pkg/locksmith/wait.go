@@ -62,36 +62,6 @@ func WaitForRekeyCompletion(vaultURL string) {
 	}
 }
 
-func WaitForParticipantRekeySubmissions(vaultURL string) {
-	count := 0
-	rekeyStarted := false
-	for {
-		status, err := GetRekeyStatus(vaultURL)
-		if err != nil {
-			fmt.Printf("\n%s\n", err.Error())
-			continue
-		}
-		if status.InProgress() {
-			rekeyStarted = true
-		}
-		emoji := getEmoji(count)
-
-		if !rekeyStarted {
-			fmt.Printf("\r\033[K%s Waiting for rekey to start...", emoji)
-		}
-		if rekeyStarted && status.RemainingKeys() != 1 {
-			fmt.Printf("\r\033[K%s %d/%d shares provided. You will be prompted for the final share.", emoji, status.Progress, status.Required)
-		}
-		if rekeyStarted && status.RemainingKeys() == 1 {
-			fmt.Printf("\r\033[K🙌 %d/%d shares provided. Please provide the final share.\n", status.Progress, status.Required)
-			break
-		}
-
-		count += 1
-		time.Sleep(1 * time.Second)
-	}
-}
-
 func WaitForVerificationCompletion(vaultURL string) {
 	count := 0
 	for {
@@ -135,6 +105,39 @@ func WaitForParticipantVerificationSubmissions(vaultURL string) {
 			fmt.Printf("\r\033[K🙌 %d/%d shares verified. Please provide the final share.\n", status.Progress, status.Threshold)
 			break
 		}
+
+		count += 1
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func WaitForParticipantRekeySubmissions(vaultURL string) {
+	count := 0
+	rekeyStarted := false
+	for {
+		status, err := GetRekeyStatus(vaultURL)
+		if err != nil {
+			fmt.Printf("\n%s\n", err.Error())
+			continue
+		}
+		if status.InProgress() {
+			rekeyStarted = true
+		}
+		emoji := getEmoji(count)
+
+		if !rekeyStarted {
+			fmt.Printf("\r\033[K%s Waiting for rekey to start...", emoji)
+		}
+		if rekeyStarted && status.RemainingKeys() != 1 {
+			fmt.Printf("\r\033[K%s %d/%d shares provided. You will be prompted for the final share.", emoji, status.Progress, status.Required)
+		}
+		if rekeyStarted && status.RemainingKeys() == 1 {
+			fmt.Printf("\r\033[K🙌 %d/%d shares provided. Please provide the final share.\n", status.Progress, status.Required)
+			break
+		}
+
+		count += 1
+		time.Sleep(1 * time.Second)
 	}
 }
 
