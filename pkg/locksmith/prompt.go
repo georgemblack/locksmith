@@ -29,8 +29,8 @@ func PromptRekeyOptions() StartRekeyRequest {
 	}
 }
 
-func PromptKeyShare() string {
-	return promptString("Key share")
+func Prompt(prompt string) string {
+	return promptString(prompt)
 }
 
 func promptString(prompt string) string {
