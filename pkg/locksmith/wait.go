@@ -115,6 +115,29 @@ func WaitForVerificationCompletion(vaultURL string) {
 	}
 }
 
+func WaitForParticipantVerificationSubmissions(vaultURL string) {
+	count := 0
+	for {
+		status, err := GetVerificationStatus(vaultURL)
+		if err != nil {
+			fmt.Printf("\n%s\n", err.Error())
+			continue
+		}
+		emoji := getEmoji(count)
+
+		if !status.InProgress() {
+			fmt.Printf("\r\033[K%s Waiting for verification to start...", emoji)
+		}
+		if status.InProgress() && status.RemainingKeys() != 1 {
+			fmt.Printf("\r\033[K%s %d/%d shares verified. You will be prompted for the final share.", emoji, status.Progress, status.Threshold)
+		}
+		if status.InProgress() && status.RemainingKeys() == 1 {
+			fmt.Printf("\r\033[K🙌 %d/%d shares verified. Please provide the final share.\n", status.Progress, status.Threshold)
+			break
+		}
+	}
+}
+
 func progressEmojis() []string {
 	return []string{"🤔", "🤨", "🧐", "🤓", "🤩"}
 }

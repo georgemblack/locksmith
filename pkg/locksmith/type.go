@@ -54,6 +54,13 @@ func (v VerificationStatus) HasError() bool {
 	return len(v.Errors) > 0
 }
 
+func (v VerificationStatus) Error() error {
+	if v.HasError() {
+		return errors.New(v.Errors[0])
+	}
+	return nil
+}
+
 func (v VerificationStatus) ErrorMessage() string {
 	if v.HasError() {
 		return v.Errors[0]
@@ -66,6 +73,14 @@ func (v VerificationStatus) InProgress() bool {
 		return v.ErrorMessage() != "no rekey configuration found"
 	}
 	return v.Started
+}
+
+func (v VerificationStatus) Completed() bool {
+	return v.Complete
+}
+
+func (v VerificationStatus) RemainingKeys() int {
+	return v.Threshold - v.Progress
 }
 
 type StartRekeyRequest struct {

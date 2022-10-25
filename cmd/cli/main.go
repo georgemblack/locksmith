@@ -33,11 +33,9 @@ func main() {
 		err = executeFollowerTrack(vaultURL)
 	}
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("🚫 %s\n", err.Error())
 		os.Exit(1)
 	}
-
-	fmt.Println("✅ Vault rekey operation complete. New keys have been verified. You're done!")
 }
 
 func executeLeaderTrack(vaultURL string) error {
@@ -89,17 +87,21 @@ func executeLeaderTrack(vaultURL string) error {
 	}
 
 	fmt.Printf("✍️  New recovery keys saved to: %s\n", fileName)
-	fmt.Println("Verification has begun. Please enter your new key share to verify.")
+	fmt.Println("Verification has begun. Please wait for other participants to submit their keys.")
+
+	locksmith.WaitForParticipantVerificationSubmissions(vaultURL)
 
 	// Submit verification key
-	_, err = locksmith.SubmitVerification(vaultURL, locksmith.PromptKeyShare())
+	// Validate a successful status in response
+	finalStatus, err := locksmith.SubmitVerification(vaultURL, locksmith.PromptKeyShare())
 	if err != nil {
 		return err
 	}
+	if !finalStatus.Completed() || status.HasError() {
+		return locksmith.WrapError(err, "rekey verification failed")
+	}
 
-	fmt.Println("Key verification submitted successfully. Waiting for other participants to submit their keys.")
-
-	locksmith.WaitForVerificationCompletion(vaultURL)
+	fmt.Println("✅ Vault rekey operation complete. New keys have been verified. You're done!")
 
 	return nil
 }
@@ -136,6 +138,8 @@ func executeFollowerTrack(vaultURL string) error {
 	fmt.Println("Key verification submitted successfully. Waiting for other participants to submit their keys.")
 
 	locksmith.WaitForVerificationCompletion(vaultURL)
+
+	fmt.Println("☑️  Operation complete. Any potential errors will be returned to the leader.")
 
 	return nil
 }
